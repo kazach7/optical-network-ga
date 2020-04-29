@@ -19,8 +19,8 @@ class Connection:
         self.cities = (a,b)
         self.lambdas = [] # Lambdas being in use on the connection.
     
-    def addLambda(self, lambdaNo):
+    def add_lambda(self, lambdaNo):
         self.lambdas.append(lambdaNo)
     
-    def clearLambdas(self):
+    def clear_lambdas(self):
         self.lambdas.clear()
