@@ -3,10 +3,25 @@
 from network import *
 from gene import *
 import random
+import argparse
 
 
 def main():
-    Gene.transponderCosts = [1, 5, 15]
+    parser = argparse.ArgumentParser(
+        description="Program using genetic algorithm for solving a \
+                     problem of demand in optic networks")
+
+    parser.add_argument("--costs", type=int, nargs="+",
+                        help="costs of 10G, 40G and 100G transponder")
+
+    args = parser.parse_args()
+
+    if args.costs is not None:
+        if len(args.costs) != 3:
+            print("costs flag must be given exactly 3 values!")
+            return
+
+        Gene.transponderCosts = tuple(args.costs) 
 
     connections = [Connection(1,2), Connection(2,3), 
                    Connection(3,4), Connection(2,4)]
