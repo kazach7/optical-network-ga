@@ -1,7 +1,7 @@
 """
 """
 from network import *
-from gene import *
+from solution import *
 import random
 import argparse
 
@@ -21,7 +21,7 @@ def main():
             print("costs flag must be given exactly 3 values!")
             return
 
-        Gene.transponderCosts = tuple(args.costs) 
+        Solution.transponderCosts = tuple(args.costs) 
 
     connections = [Connection(1,2), Connection(2,3), 
                    Connection(3,4), Connection(2,4)]
@@ -46,11 +46,11 @@ def main():
                 if (k > 7): print("\n\t\t", end = '')
 
     print("\n")
-    gene = Gene(7)
-    gene.set_allele(3, (3, 0, 1))
-    gene.set_allele(1, (3, 4, 5))
+    solution = Solution(7)
+    solution.set_allele(3, (3, 0, 1))
+    solution.set_allele(1, (3, 4, 5))
 
-    print("Example cost: {}".format(gene.calculate_cost()))
+    print("Example cost: {}".format(solution.calculate_cost()))
     
 
 
