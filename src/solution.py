@@ -29,12 +29,45 @@ class Solution:
         
         return divergencies
             
+    def apply_transponders_to_connections(self, demands):
+        # For each gene (demand)...
+        for i in range(len(self.genotype)):
+            # ...for each allele (link)...
+            for j in range(len(self.genotype[i].alleles)):
+                # ...for every transponder used on that link add a lambda to every connection
+                # used by the link. Choose the smallest lambda number unoccupied on all of the
+                # connections.
+            
+                # Get transponders count on the link.
+                transpondersCount = 0
+                for t in self.genotype[i].get_allele(j):
+                    transpondersCount += t
+
+                # Get connections in that link.
+                connections = demands[i].links[j].connections
+
+                # Apply transponders to connections.
+                for _ in range(transpondersCount):
+                    lambdaNo = 1
+                    lambdaOccupied = True
+                    while (lambdaOccupied):
+                        lambdaOccupied = False
+                        for c in connections:
+                            if (c.check_if_lambda_occupied(lambdaNo)):
+                                lambdaNo += 1
+                                lambdaOccupied = True
+                                break
+                    
+                    for c in connections:
+                        c.add_lambda(lambdaNo)
+
+
 # One gene in the solution's genotype - corresponds to one demand.
 class Gene:
 
     def __init__(self, routes_amount):
-        # Initialize genotype
         self.alleles = []
+        # One allele corresponds to one link available to fulfill the demand.
         for _ in range(routes_amount):
             self.alleles.append((0, 0, 0))
         

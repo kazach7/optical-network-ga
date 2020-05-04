@@ -21,6 +21,9 @@ class Connection:
     
     def add_lambda(self, lambdaNo):
         self.lambdas.append(lambdaNo)
+
+    def check_if_lambda_occupied(self, lambdaNo):
+        return (lambdaNo in self.lambdas)
     
     def clear_lambdas(self):
         self.lambdas.clear()
