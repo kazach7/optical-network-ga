@@ -1,7 +1,7 @@
 """
 """
 from network import *
-from solution import *
+from solution import Solution
 import random
 import argparse
 
@@ -46,9 +46,9 @@ def main():
                 if (k > 7): print("\n\t\t", end = '')
 
     print("\n")
-    solution = Solution(7)
-    solution.set_allele(3, (3, 0, 1))
-    solution.set_allele(1, (3, 4, 5))
+    solution = Solution(1, 7)
+    solution.genotype[0].set_allele(3, (3, 0, 1))
+    solution.genotype[0].set_allele(1, (3, 4, 5))
 
     print("Example cost: {}".format(solution.calculate_cost()))
     
