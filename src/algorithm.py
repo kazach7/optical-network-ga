@@ -1,3 +1,6 @@
+"""
+Logic of the genetic algorithm.
+"""
 from solution import Solution
 import random
 import itertools 
@@ -10,9 +13,8 @@ class AlgorithmPerformer:
     # Poki co krzyzowanie dwupunktowe.
     crossoverSplitPointsNumber = 2 
 
-    def __init__(self, demands, connections, fiberCapacity):
-        self.demands = demands
-        self.connections = connections
+    def __init__(self, network, fiberCapacity):
+        self.network = network
         self.fiberCapacity = fiberCapacity
 
     def perform_algorithm(self, populationSize, iterations, mutationProbability):
@@ -27,12 +29,13 @@ class AlgorithmPerformer:
 
     def generate_initial_population(self, populationSize):
         result = []
-        for _ in range(len(populationSize)):
-            s = Solution(len(self.demands))
+        for _ in range(populationSize):
+            s = Solution(len(self.network.demands))
             j = 0
             for gene in s.genotype:
-                while (gene.calculate_coverage() < self.demands[j].value):
-                    gene.get_allele()[random.randint(0,2)] += 1
+                while (gene.calculate_coverage() < self.network.demands[j].value):
+                    gene.alleles[random.randint(0,6)][random.randint(0,2)] += 1
+
                 j += 1
             result.append(s)
 
@@ -43,14 +46,14 @@ class AlgorithmPerformer:
 
     def perform_multipoint_crossover(self, population, pointsNo):
         children = []
-        genotype_len = len(self.demands)
+        genotype_len = len(self.network.demands)
         for parents in list(itertools.combinations(population, 2)):
             loci = []
             loci.append(random.randint(0, genotype_len-(pointsNo-1)))
             for i in range(1, pointsNo):
                 loci.append(random.randint(loci[i-1] + 1, genotype_len - (pointsNo-i-1)))
 
-            twins = []
+            twins = [Solution(len(self.network.demands)), Solution(len(self.network.demands))]
             shift = 0
             nextLocusIndex = 0
             allLociPassed = False
@@ -60,7 +63,7 @@ class AlgorithmPerformer:
                     nextLocusIndex += 1
                     if (nextLocusIndex == len(loci)): allLociPassed = True
                 for j in range(2):
-                    twins[j].append(parents[(j + shift) % 2][i])
+                    twins[j].genotype[i] = parents[(j + shift) % 2].genotype[i]
             for t in twins:
                 children.append(t)
 
@@ -69,14 +72,16 @@ class AlgorithmPerformer:
     def perform_mutation(self, children, mutationProbability):
         mutationCount = 0
         rand_max = (int)(1/mutationProbability)
+        print ("rand_max: ", rand_max)
         for child in children:
-            for gene in child:
-                for allele in gene.get_allele():
+            for gene in child.genotype:
+                for allele in gene.alleles:
                     for i in range(len(allele)):
                         if (random.randint(1, rand_max) < 2):
                             mutationCount += 1
-                            allele[i] += random.choice((-1,1))
-        print ("Mutated %d times among %d children." % mutationCount, len(children))
+                            if (allele[i] == 0): allele[i] += 1
+                            else: allele[i] += random.choice((-1,1))
+        print ("Mutated %d times among %d children." % (mutationCount, len(children)))
 
     def choose_new_population(self, population, children, populationSize):
         # Calculate fitness values for all solutions from parent population and children
@@ -100,19 +105,22 @@ class AlgorithmPerformer:
         fitness = (-1)*solution.calculate_cost()
 
         # For all unfulfilled demands diminish the fitness value much.
-        for div in solution.get_coverage_divergencies_in_genes():
+        for div in solution.get_coverage_divergencies_in_genes(self.network.demands):
             if (div > 0):
                 fitness -= div*self.unfulfilledDemandPunishmentFactor
             
-        # For every connection where there is more lambdas than the capacity diminish
+        # For every link on which there is more lambdas than the capacity diminish
         # the fitness value much.
-        solution.apply_transponders_to_connections()
-        for conn in self.connections:
-            excess = len(conn.lambdas) - self.fiberCapacity
+        self.network.apply_solution_to_network(solution)
+
+        for l in self.network.links:
+            excess = len(l.lambdas) - self.fiberCapacity
             if (excess > 0):
                 fitness -= excess*self.overfilledFiberPunishmentFactor
-            conn.clear_lambdas()
         
+        self.network.clear_network()
+        
+        print ("fitness: ", fitness)
         return fitness
         
                         

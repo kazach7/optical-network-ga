@@ -1,7 +1,9 @@
 """
 """
+import xml.etree.ElementTree as ET
 from network import *
 from solution import Solution
+from algorithm import AlgorithmPerformer
 import random
 import argparse
 
@@ -11,47 +13,67 @@ def main():
         description="Program using genetic algorithm for solving a \
                      problem of demand in optic networks")
 
+    parser.add_argument("path", type=str, help="path to an xml file with the network")
+    parser.add_argument("--capacity", metavar="fiberCapacity", type=int, required=True,
+                        help ="maximum number of lambdas in the fiber")
     parser.add_argument("--costs", type=int, nargs="+",
                         help="costs of 10G, 40G and 100G transponder")
 
     args = parser.parse_args()
 
+    network = parseNetwork(args.path)
+    fiber_capacity = args.capacity
     if args.costs is not None:
         if len(args.costs) != 3:
             print("costs flag must be given exactly 3 values!")
             return
+        Solution.transponderCosts = tuple(args.costs)
 
-        Solution.transponderCosts = tuple(args.costs) 
-
-    connections = [Connection(1,2), Connection(2,3), 
-                   Connection(3,4), Connection(2,4)]
-
-    demands = []
-    links = [Link([connections[0], connections[3]])]
-    demands.append(Demand(random.randint(1,100), links))
-
-    i = 0
-    for d in demands:
-        print ("Demand %d:" % i)
-        i += 1
-        j = 0
-        for l in d.links:
-            print ("\tLink %d:" % j)
-            j += 1
-            k = 0
-            print ("\t\t", end = '')
-            for c in l.connections:
-                print (c.cities, end = '  ')
-                k += 1
-                if (k > 7): print("\n\t\t", end = '')
-
-    print("\n")
-    solution = Solution(1, 7)
-    solution.genotype[0].set_allele(3, (3, 0, 1))
-    solution.genotype[0].set_allele(1, (3, 4, 5))
-
-    print("Example cost: {}".format(solution.calculate_cost()))
+    solver = AlgorithmPerformer(network, fiber_capacity)
     
+    population_size = 10
+    iterations = 10
+    mutation_probability = 0.05
+    winner = solver.perform_algorithm(population_size, iterations, mutation_probability)
+
+    #solution = Solution(len(network.demands), len(network.demands[0].paths))
+    #solution.genotype[0].set_allele(3, (3, 0, 1))
+    #solution.genotype[0].set_allele(1, (3, 4, 5))
+    #print("Example cost: {}".format(solution.calculate_cost()))
+   
+def parseNetwork(path):
+        tree = ET.parse(path)
+        root = tree.getroot()
+
+        links = []
+        for link in root[0][1]:
+            link_id = link.get('id')
+            source = link[0].text
+            dest = link[1].text
+            links.append(Link(link_id, source, dest))
+
+        temp_dictionary = {link.link_id:link for link in links}
+
+        demands = []
+        for demand in root[1]:
+            demand_id = demand.get('id')
+            value = float(demand[2].text)
+            print ("-- ", demand_id)
+
+            paths = []
+            for path in demand[3]:
+                print ("path:")
+
+                links_of_path = []
+                for l in path:
+                    links_of_path.append(temp_dictionary[l.text])
+                    print(temp_dictionary[l.text].link_id)
+
+                paths.append(Path(links_of_path))
+
+            demands.append(Demand(demand_id, value, paths))
+
+        return Network(links, demands)
 
 
 if __name__ == "__main__":
