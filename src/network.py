@@ -2,6 +2,7 @@
 Classes providing abstraction for the elements in the network.
 """
 
+
 class Network:
     def __init__(self, links, demands):
         self.links = links
@@ -20,22 +21,19 @@ class Network:
 
                 # Get links from that path.
                 links = self.demands[i].paths[j].links
+                taken_lambdas = set([lamb for lambdas in links for lamb in links])
+                lambdaNo = 1
 
                 # For every transponder used on the path add a lambda to every link of the path.
                 # Choose the smallest lambda number unoccupied on all of the links.
-                for _ in range(transpondersCount):
-                    lambdaNo = 1
-                    lambdaOccupied = True
-                    while (lambdaOccupied):
-                        lambdaOccupied = False
+                while (transpondersCount > 0):
+                    if lambdaNo not in taken_lambdas:
                         for l in links:
-                            if (l.check_if_lambda_occupied(lambdaNo)):
-                                lambdaNo += 1
-                                lambdaOccupied = True
-                                break
+                            l.add_lambda(lambdaNo)
+                            taken_lambdas.add(lambdaNo)
+                            transpondersCount -= 1
                     
-                    for l in links:
-                        l.add_lambda(lambdaNo)
+                    lambdaNo += 1
 
     def clear_network(self):
         for l in self.links:

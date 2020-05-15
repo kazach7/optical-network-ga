@@ -5,6 +5,7 @@ from solution import Solution
 import random
 import itertools 
 
+
 class AlgorithmPerformer:
     # Mnozone przez liczbe nadmiarowych lambd i odejmowane od f. przystosowania.
     overfilledFiberPunishmentFactor = 200
@@ -88,11 +89,14 @@ class AlgorithmPerformer:
         solutions_with_fitness_values = []
         for solution in (population + children):
             solutions_with_fitness_values.append((solution, self.calculate_fitness_value(solution)))
+
         # Sort solutions descending by their fitness value
         solutions_with_fitness_values.sort(key=lambda x: x[1], reverse=True)
+
         # Get the sorted list of solutions from the list of pairs
         unzipped = zip(*solutions_with_fitness_values)
         new_population = list(list(unzipped)[0])
+        
         # Truncate the new population to the populationSize size
         del new_population[populationSize:]
         
@@ -116,7 +120,7 @@ class AlgorithmPerformer:
         for l in self.network.links:
             excess = len(l.lambdas) - self.fiberCapacity
             if (excess > 0):
-                fitness -= excess*self.overfilledFiberPunishmentFactor
+                fitness -= excess * self.overfilledFiberPunishmentFactor
         
         self.network.clear_network()
         
