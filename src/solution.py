@@ -1,6 +1,7 @@
 """
 Classes providing abstraction for a solution to the problem.
 """
+import copy
 
 # Represents a single solution of the optimized problem.
 class Solution:
@@ -61,3 +62,8 @@ class Gene:
 
     def set_allele(self, pos, allele):
         self.alleles[pos] = allele
+
+    def deepcopy(self):
+        new_gene = Gene(0)
+        new_gene.alleles = copy.deepcopy(self.alleles)
+        return new_gene

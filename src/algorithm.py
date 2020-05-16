@@ -64,7 +64,7 @@ class AlgorithmPerformer:
                     nextLocusIndex += 1
                     if (nextLocusIndex == len(loci)): allLociPassed = True
                 for j in range(2):
-                    twins[j].genotype[i] = parents[(j + shift) % 2].genotype[i]
+                    twins[j].genotype[i] = parents[(j + shift) % 2].genotype[i].deepcopy()
             for t in twins:
                 children.append(t)
 
@@ -99,6 +99,12 @@ class AlgorithmPerformer:
         
         # Truncate the new population to the populationSize size
         del new_population[populationSize:]
+
+        # Print winning population's scores
+        print("Winning population:")
+        for p in solutions_with_fitness_values[:populationSize]:
+            print("{}".format(p[1]))
+        print()
         
         return new_population
 
@@ -124,7 +130,7 @@ class AlgorithmPerformer:
         
         self.network.clear_network()
         
-        print ("fitness: ", fitness)
+        #print ("fitness: ", fitness)
         return fitness
         
                         

@@ -58,16 +58,13 @@ def parseNetwork(path):
         for demand in root[1]:
             demand_id = demand.get('id')
             value = float(demand[2].text)
-            print ("-- ", demand_id)
 
             paths = []
             for path in demand[3]:
-                print ("path:")
 
                 links_of_path = []
                 for l in path:
                     links_of_path.append(temp_dictionary[l.text])
-                    print(temp_dictionary[l.text].link_id)
 
                 paths.append(Path(links_of_path))
 
