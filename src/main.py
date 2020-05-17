@@ -32,9 +32,11 @@ def main():
     solver = AlgorithmPerformer(network, fiber_capacity)
     
     population_size = 10
-    iterations = 10
-    mutation_probability = 0.05
+    iterations = 80
+    mutation_probability = 0.005
     winner = solver.perform_algorithm(population_size, iterations, mutation_probability)
+    
+    winner.present(network.demands)
 
     #solution = Solution(len(network.demands), len(network.demands[0].paths))
     #solution.genotype[0].set_allele(3, (3, 0, 1))

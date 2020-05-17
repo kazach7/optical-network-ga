@@ -73,7 +73,7 @@ class AlgorithmPerformer:
     def perform_mutation(self, children, mutationProbability):
         mutationCount = 0
         rand_max = (int)(1/mutationProbability)
-        print ("rand_max: ", rand_max)
+
         for child in children:
             for gene in child.genotype:
                 for allele in gene.alleles:

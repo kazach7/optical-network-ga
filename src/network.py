@@ -41,8 +41,8 @@ class Network:
 
 # Demand, with a value and paths which can be used to realize it.
 class Demand:
-    def __init__(self, demand_id, value, paths):
-        self.demand_id = demand_id
+    def __init__(self, id, value, paths):
+        self.id = id
         self.value = value
         self.paths = paths
     

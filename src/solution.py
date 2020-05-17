@@ -31,6 +31,19 @@ class Solution:
         
         return divergencies
 
+    def present(self, demands):
+        assert(len(self.genotype) == len(demands))
+
+        for gen, i in zip(self.genotype, range(len(self.genotype))):
+            print("{}: {}".format(demands[i].id, demands[i].value))
+
+            for allele in gen.alleles:
+                print("{}".format(allele))
+            print("Total cost: {}".format(gen.calculate_cost()))
+            print("Divergence: {}".format(demands[i].value - gen.calculate_coverage()))
+            print()
+                
+
 # One gene in the solution's genotype - corresponds to one demand.
 class Gene:
     def __init__(self, allele_count):
