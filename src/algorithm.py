@@ -12,6 +12,7 @@ class AlgorithmPerformer:
     def __init__(self, network, fiberCapacity):
         self.network = network
         self.fiberCapacity = fiberCapacity
+        self.verbose = False
 
     def perform_algorithm(self, populationSize, iterations, mutationProbability):
         population = self.generate_initial_population(populationSize)
@@ -19,9 +20,10 @@ class AlgorithmPerformer:
         it = 0  # iteration
         last_improv = 0  # last improvement
         last_improv_value = None
+        end_char = "\n" if self.verbose else "\r"
 
         while (it < config.HARD_ITERATION_LIMIT and last_improv < config.NOT_IMPROVING_ITERATION_LIMIT):
-            print("Iteration {}, last improvement {} iterations ago".format(it, last_improv))
+            print("Iteration {}, last improvement {} iterations ago         ".format(it, last_improv), end=end_char)
 
             children = self.perform_crossover(population)
             self.perform_mutation(children, mutationProbability)
@@ -95,7 +97,9 @@ class AlgorithmPerformer:
                             mutationCount += 1
                             if (allele[i] == 0): allele[i] += 1
                             else: allele[i] += random.choice((-1,1))
-        print ("Mutated %d times among %d children." % (mutationCount, len(children)))
+        
+        if self.verbose:
+            print ("Mutated %d times among %d children." % (mutationCount, len(children)))
 
     def choose_new_population(self, population, children, populationSize):
         # Calculate fitness values for all solutions from parent population and children
@@ -114,10 +118,11 @@ class AlgorithmPerformer:
         del new_population[populationSize:]
 
         # Print winning population's scores
-        print("Winning population:")
-        for p in solutions_with_fitness_values[:populationSize]:
-            print("{}".format(p[1]))
-        print()
+        if self.verbose:
+            print("Winning population:")
+            for p in solutions_with_fitness_values[:populationSize]:
+                print("{}".format(p[1]))
+            print()
         
         return new_population
 

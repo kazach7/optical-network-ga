@@ -19,6 +19,8 @@ def main():
                         help ="maximum number of lambdas in the fiber")
     parser.add_argument("--costs", type=int, nargs="+",
                         help="costs of 10G, 40G and 100G transponder")
+    parser.add_argument("--verbose", "-v", action="store_true",
+                        help="Print additional info")
 
     args = parser.parse_args()
 
@@ -32,14 +34,11 @@ def main():
         return
 
     solver = AlgorithmPerformer(network, fiber_capacity)
+    solver.verbose = args.verbose
     
     winner = solver.perform_algorithm(config.POPULATION_SIZE, config.ITERATIONS, config.MUTATION_PROBABILITY)
     winner.present(network, fiber_capacity)
-
-    #solution = Solution(len(network.demands), len(network.demands[0].paths))
-    #solution.genotype[0].set_allele(3, (3, 0, 1))
-    #solution.genotype[0].set_allele(1, (3, 4, 5))
-    #print("Example cost: {}".format(solution.calculate_cost()))
+    
    
 def parseNetwork(path):
         tree = ET.parse(path)
