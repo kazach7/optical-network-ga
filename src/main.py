@@ -6,6 +6,7 @@ from solution import Solution
 from algorithm import AlgorithmPerformer
 import random
 import argparse
+import config
 
 
 def main():
@@ -14,7 +15,7 @@ def main():
                      problem of demand in optic networks")
 
     parser.add_argument("path", type=str, help="path to an xml file with the network")
-    parser.add_argument("--capacity", metavar="fiberCapacity", type=int, required=True,
+    parser.add_argument("--capacity", metavar="fiberCapacity", type=int,
                         help ="maximum number of lambdas in the fiber")
     parser.add_argument("--costs", type=int, nargs="+",
                         help="costs of 10G, 40G and 100G transponder")
@@ -22,20 +23,17 @@ def main():
     args = parser.parse_args()
 
     network = parseNetwork(args.path)
-    fiber_capacity = args.capacity
-    if args.costs is not None:
-        if len(args.costs) != 3:
-            print("costs flag must be given exactly 3 values!")
-            return
-        Solution.transponderCosts = tuple(args.costs)
+    
+    fiber_capacity = args.capacity if args.capacity is not None else config.FIBER_CAPACITY
+    Solution.transponderCosts = tuple(args.costs) if args.costs is not None else config.TRANSPONDER_COSTS
+
+    if len(Solution.transponderCosts) != 3:
+        print("There must be provided three costs of transponders!")
+        return
 
     solver = AlgorithmPerformer(network, fiber_capacity)
     
-    population_size = 10
-    iterations = 80
-    mutation_probability = 0.005
-    winner = solver.perform_algorithm(population_size, iterations, mutation_probability)
-    
+    winner = solver.perform_algorithm(config.POPULATION_SIZE, config.ITERATIONS, config.MUTATION_PROBABILITY)
     winner.present(network, fiber_capacity)
 
     #solution = Solution(len(network.demands), len(network.demands[0].paths))

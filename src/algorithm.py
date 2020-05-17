@@ -4,15 +4,10 @@ Logic of the genetic algorithm.
 from solution import Solution
 import random
 import itertools 
+import config
 
 
 class AlgorithmPerformer:
-    # Mnozone przez liczbe nadmiarowych lambd i odejmowane od f. przystosowania.
-    overfilledFiberPunishmentFactor = 200
-    #  Mnozone przez wartosc jakiej zabraklo by spelnic zapotrzebowanie i odejmowane od f. przyst.
-    unfulfilledDemandPunishmentFactor = 3
-    # Poki co krzyzowanie dwupunktowe.
-    crossoverSplitPointsNumber = 2 
 
     def __init__(self, network, fiberCapacity):
         self.network = network
@@ -43,7 +38,7 @@ class AlgorithmPerformer:
         return result
 
     def perform_crossover(self, population):
-        return self.perform_multipoint_crossover(population, self.crossoverSplitPointsNumber)
+        return self.perform_multipoint_crossover(population, config.CROSSOVER_SPLIT_POINTS_NUMBER)
 
     def perform_multipoint_crossover(self, population, pointsNo):
         children = []
@@ -117,7 +112,7 @@ class AlgorithmPerformer:
         # For all unfulfilled demands diminish the fitness value much.
         for div in solution.get_coverage_divergencies_in_genes(self.network.demands):
             if (div > 0):
-                fitness -= div*self.unfulfilledDemandPunishmentFactor
+                fitness -= div * config.UNFULFILLED_DEMAND_PUNISHMENT_FACTOR
             
         # For every link on which there is more lambdas than the capacity diminish
         # the fitness value much.
@@ -126,7 +121,7 @@ class AlgorithmPerformer:
         for l in self.network.links:
             excess = len(l.lambdas) - self.fiberCapacity
             if (excess > 0):
-                fitness -= excess * self.overfilledFiberPunishmentFactor
+                fitness -= excess * config.OVERFILLED_FIBER_PUNISHMENT_FACTOR
         
         self.network.clear_network()
         
