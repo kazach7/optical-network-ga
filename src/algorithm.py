@@ -16,12 +16,30 @@ class AlgorithmPerformer:
     def perform_algorithm(self, populationSize, iterations, mutationProbability):
         population = self.generate_initial_population(populationSize)
 
-        for _ in range(iterations):
+        it = 0  # iteration
+        last_improv = 0  # last improvement
+        last_improv_value = None
+
+        while (it < config.HARD_ITERATION_LIMIT and last_improv < config.NOT_IMPROVING_ITERATION_LIMIT):
+            print("Iteration {}, last improvement {} iterations ago".format(it, last_improv))
+
             children = self.perform_crossover(population)
             self.perform_mutation(children, mutationProbability)
             population = self.choose_new_population(population, children, populationSize)
+            it += 1
         
-        return population[0] # byc moze tak, ale nie wiem
+            if last_improv_value is None:
+                last_improv_value = population[0].fitness
+                continue
+
+            if (population[0].fitness - last_improv_value) >= config.IMPROVEMENT_THRESHOLD:
+                last_improv = 0
+                last_improv_value = population[0].fitness
+                continue
+
+            last_improv += 1
+
+        return population[0]
 
     def generate_initial_population(self, populationSize):
         result = []
@@ -125,7 +143,7 @@ class AlgorithmPerformer:
         
         self.network.clear_network()
         
-        #print ("fitness: ", fitness)
+        solution.fitness = fitness
         return fitness
         
                         

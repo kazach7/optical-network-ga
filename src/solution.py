@@ -10,6 +10,7 @@ class Solution:
 
     def __init__(self, demands_amount, routes_amount = 7):
         self.genotype = []
+        self.fitness = 0
         for _ in range(demands_amount):
             self.genotype.append(Gene(routes_amount))
 
@@ -50,6 +51,8 @@ class Solution:
             excess = len(link.lambdas) - fiber_capacity
             if (excess > 0):
                 print("{}, {} above cap".format(link.id, excess))
+
+        print("\nFitness value: {}".format(self.fitness))
                 
 
 # One gene in the solution's genotype - corresponds to one demand.
