@@ -53,8 +53,8 @@ class Path:
 
 # Direct connection between two cities.
 class Link:
-    def __init__(self, link_id, source, dest):
-        self.link_id = link_id
+    def __init__(self, id, source, dest):
+        self.id = id
         self.source = source
         self.dest = dest
         self.lambdas = [] # Lambdas being in use on the connection.

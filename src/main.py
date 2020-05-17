@@ -36,7 +36,7 @@ def main():
     mutation_probability = 0.005
     winner = solver.perform_algorithm(population_size, iterations, mutation_probability)
     
-    winner.present(network.demands)
+    winner.present(network, fiber_capacity)
 
     #solution = Solution(len(network.demands), len(network.demands[0].paths))
     #solution.genotype[0].set_allele(3, (3, 0, 1))
@@ -54,7 +54,7 @@ def parseNetwork(path):
             dest = link[1].text
             links.append(Link(link_id, source, dest))
 
-        temp_dictionary = {link.link_id:link for link in links}
+        temp_dictionary = {link.id:link for link in links}
 
         demands = []
         for demand in root[1]:

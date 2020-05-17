@@ -31,7 +31,9 @@ class Solution:
         
         return divergencies
 
-    def present(self, demands):
+    def present(self, network, fiber_capacity):
+        demands = network.demands
+        links = network.links
         assert(len(self.genotype) == len(demands))
 
         for gen, i in zip(self.genotype, range(len(self.genotype))):
@@ -42,6 +44,12 @@ class Solution:
             print("Total cost: {}".format(gen.calculate_cost()))
             print("Divergence: {}".format(demands[i].value - gen.calculate_coverage()))
             print()
+
+        print("Links above capacity:")
+        for link in links:
+            excess = len(link.lambdas) - fiber_capacity
+            if (excess > 0):
+                print("{}, {} above cap".format(link.id, excess))
                 
 
 # One gene in the solution's genotype - corresponds to one demand.
