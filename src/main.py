@@ -1,14 +1,16 @@
 """
+Application startup; parses arguments, starts the algorithm and displays its final results. 
 """
-import xml.etree.ElementTree as ET
 from network import *
 from solution import Solution
 from algorithm import AlgorithmPerformer
+import config
+import xml.etree.ElementTree as ET
 import random
 import argparse
-import config
+from profiling_tools import measure_time
 
-
+@measure_time
 def main():
     parser = argparse.ArgumentParser(
         description="Program using genetic algorithm for solving a \

@@ -21,7 +21,7 @@ class Network:
 
                 # Get links from that path.
                 links = self.demands[i].paths[j].links
-                taken_lambdas = set([lamb for lambdas in links for lamb in links])
+                taken_lambdas = set([lamb for link in links for lamb in link.lambdas])
                 lambdaNo = 1
 
                 # For every transponder used on the path add a lambda to every link of the path.
@@ -61,9 +61,6 @@ class Link:
     
     def add_lambda(self, lambdaNo):
         self.lambdas.append(lambdaNo)
-
-    def check_if_lambda_occupied(self, lambdaNo):
-        return (lambdaNo in self.lambdas)
     
     def clear_lambdas(self):
         self.lambdas.clear()
