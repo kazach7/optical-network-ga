@@ -40,6 +40,12 @@ def main():
     
     winner = solver.perform_algorithm(config.POPULATION_SIZE, config.ITERATIONS, config.MUTATION_PROBABILITY)
     winner.present(network, fiber_capacity)
+    print ("\nConfiguration:")
+    print ("Fiber capacity: {}".format(fiber_capacity))
+    print ("Popultaion size: {}".format(config.POPULATION_SIZE))
+    print ("Mutation probability: {}".format(config.MUTATION_PROBABILITY))
+    print ("Overfilled fiber punishment factor: {}".format(config.OVERFILLED_FIBER_PUNISHMENT_FACTOR))
+    print ("Unfulfilled demand punishment factor: {}".format(config.UNFULFILLED_DEMAND_PUNISHMENT_FACTOR))
     
    
 def parseNetwork(path):
